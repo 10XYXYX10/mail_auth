@@ -1,11 +1,11 @@
 'use client'
-import AlertError from "../AlertError"
-import { useRef, useState } from "react"
+import { FormEvent, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
+import axios from "axios"
 import useStore from "@/store"
+import AlertError from "../AlertError"
 import SpinnerModal from "../SpinnerModal"
 import { validationForWord } from "@/lib/functions/myValidation"
-import axios from "axios"
 import { IconPencil } from "@tabler/icons-react"
 
 const UpdateName = ({
@@ -22,7 +22,8 @@ const UpdateName = ({
     const [nameError,setNameError] = useState('');
     const nameInput = useRef<HTMLInputElement>(null);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setLoadingFlag(true);//ローディング状態でボタンを非活性に
         if(error)setError('');
     
@@ -30,7 +31,6 @@ const UpdateName = ({
         //◆【nameDataのバリデーション】
         const currentNameInput = nameInput.current as HTMLInputElement;
         const currentName = currentNameInput.value;
-        console.log(currentName)
         if(user.name===currentName){
             setLoadingFlag(false);
             return;
@@ -47,7 +47,7 @@ const UpdateName = ({
         //////////
         //◆【通信】
         try {
-            await axios.put<{articleId:number}>(
+            await axios.put(
                 `${apiUrl}/user`,
                 {
                     name:currentName,
@@ -84,7 +84,7 @@ const UpdateName = ({
                     <AlertError errMessage={error} reloadBtFlag={false}/>
                 </div>
             )}
-            <form onSubmit={(e) => e.preventDefault()} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-xl">
+            <form onSubmit={(e) => handleSubmit(e)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-xl">
                 <div className="mb-4">
                     <label className='block text-gray-700 text-md font-bold'>name<em className="text-red-500">*</em></label>
                     <span className='text-xs text-gray-500'>100字以内のタイトル</span>
@@ -104,7 +104,7 @@ const UpdateName = ({
                 </div>
                 <div className='flex items-center justify-between'>
                     <button
-                        onClick={handleSubmit}
+                        type='submit'
                         className={
                             `bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline 
                             ${loadingFlag&&'cursor-not-allowed'}

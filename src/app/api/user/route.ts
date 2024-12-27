@@ -1,5 +1,5 @@
-import { validationForWord } from "@/lib/functions/myValidation";
 import { saveAccessTokenInCookies, security } from "@/lib/functions/seculity";
+import { validationForWord } from "@/lib/functions/myValidation";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,15 +23,11 @@ export async function PUT(request: NextRequest) {
         const validationResult = validationForWord(name,20);
         if( !validationResult.result)return NextResponse.json( {message:`Bad request.${validationResult.message}`}, {status:400});
         
-        //////////
-        //■[ 更新対象userの存在＆userIdの確認 ]
-        const targetUser = await prisma.user.findUnique({where:{id:userId}});
-        if(!targetUser || targetUser.id!==userId)return NextResponse.json( {message:'Authentication failed.'}, {status:401});
 
         //////////
         //■[ 更新 ]
         await prisma.user.update({
-            where:{id:targetUser.id},
+            where:{id:userId},
             data:{
                 name //name:name
             }

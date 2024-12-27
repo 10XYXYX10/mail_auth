@@ -1,6 +1,6 @@
 NEXT_PUBLIC_APP_URL='http://localhost:3000'
 NEXT_PUBLIC_API_URL='http://localhost:3000/api'
-DATABASE_URL="postgresql://smsauth:smsauth@localhost:5434/smsauth?schema=public"
+DATABASE_URL="postgresql://mailauth:mailauth@localhost:5434/mailauth?schema=public"
 # gmailUser=''
 # gmailPass=''
 jwtHashKey='randomString'#任意のランダムな半角英数字の文字列
